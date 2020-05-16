@@ -15,7 +15,13 @@ class App extends Component {
   render() {
     return (
       <Switch>
-        <Route exact path='/' render={(rtProps) => <PaletteList  palettes={seedColors} {...rtProps} /> } />
+        <Route
+          exact
+          path='/'
+          render={(rtProps) => (
+            <PaletteList palettes={seedColors} {...rtProps} />
+          )}
+        />
         <Route
           exact
           path='/palette/:id'
@@ -27,13 +33,19 @@ class App extends Component {
             />
           )}
         />
-        <Route 
-          exact 
-          path="/palette/:paletteId/:colorId" 
-          render={() => <SingleColorPalette/>} />
+        <Route
+          exact
+          path='/palette/:paletteId/:colorId'
+          render={(routeProps) => (
+            <SingleColorPalette
+              colorId={routeProps.match.params.colorId}
+              palette={generatePalette(
+                this.findPalette(routeProps.match.params.paletteId)
+              )}
+            />
+          )}
+        />
       </Switch>
-
-     
     );
   }
 }
