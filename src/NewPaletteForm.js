@@ -17,46 +17,66 @@ import { ChromePicker } from "react-color";
 
 const drawerWidth = 400;
 
-const styles = (theme) => ({
-  root: {
-    display: "flex",
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-    height: "100vh",
-  },
-  drawerPaper: {
-    width: drawerWidth,
-    display: "flex",
-    alignItems: "center",
-  },
-  drawerHeader: {
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
-    padding: "0 8px",
-    ...theme.mixins.toolbar,
-    justifyContent: "flex-end",
-  },
-  content: {
-    flexGrow: 1,
-    height: "calc(100vh - 64px)",
-    padding: 0,
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
-});
+	const styles = (theme) => ({
+    root: {
+      display: "flex",
+    },
+    appBar: {
+      transition: theme.transitions.create(["margin", "width"], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+    appBarShift: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+      transition: theme.transitions.create(["margin", "width"], {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    },
+    menuButton: {
+      marginLeft: 12,
+      marginRight: 20,
+    },
+    hide: {
+      display: "none",
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    drawerHeader: {
+      display: "flex",
+      alignItems: "center",
+      padding: "0 8px",
+      ...theme.mixins.toolbar,
+      justifyContent: "flex-end",
+    },
+    content: {
+      flexGrow: 1,
+      height:  "calc(100vh - 64px)",
+      padding: theme.spacing.unit * 3,
+      transition: theme.transitions.create("margin", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      marginLeft: -drawerWidth,
+    },
+    contentShift: {
+      transition: theme.transitions.create("margin", {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0,
+    },
+  });
+
+
+
 
 class NewPaletteForm extends Component {
   constructor(props) {
@@ -65,23 +85,22 @@ class NewPaletteForm extends Component {
       open: true,
       currentColor: "",
       newName: "",
-      colors: []
+      colors: [],
     };
     this.updateCurrentColor = this.updateCurrentColor.bind(this);
     this.addNewColor = this.addNewColor.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    ValidatorForm.addValidationRule("isColorNameUnique", (value) => 
+    ValidatorForm.addValidationRule("isColorNameUnique", (value) =>
       this.state.colors.every(
         ({ name }) => name.toLowerCase() !== value.toLowerCase()
       )
     );
-    ValidatorForm.addValidationRule("isColorUnique", (value) => 
-      this.state.colors.every(
-        ({ color }) => color !== this.state.currentColor
-      )
+    ValidatorForm.addValidationRule("isColorUnique", (value) =>
+      this.state.colors.every(({ color }) => color !== this.state.currentColor)
     );
   }
 
@@ -102,11 +121,22 @@ class NewPaletteForm extends Component {
       color: this.state.currentColor,
       name: this.state.newName,
     };
-    this.setState({ colors: [...this.state.colors, newColor], newName: '' });
+    this.setState({ colors: [...this.state.colors, newColor], newName: "" });
   }
 
   handleChange(evt) {
     this.setState({ newName: evt.target.value });
+  }
+
+  handleSubmit() {
+    let newName = "New Test Palette"
+    const newPalette = {
+      paletteName: newName,
+      id: newName.toLowerCase().replace(/ /g, '-'),
+      colors: this.state.colors,
+    };
+    this.props.savePalette(newPalette);
+    this.props.history.push('/')
   }
 
   render() {
@@ -118,21 +148,28 @@ class NewPaletteForm extends Component {
         <CssBaseline />
         <AppBar
           position='fixed'
+          color='default'
           className={classNames(classes.appBar, {
             [classes.appBarShift]: open,
           })}>
-          <Toolbar>
+          <Toolbar disableGutters={!open}>
             <IconButton
               color='inherit'
-              aria-label='open drawer'
+              aria-label='Open drawer'
               onClick={this.handleDrawerOpen}
               edge='start'
               className={classNames(classes.menuButton, open && classes.hide)}>
               <MenuIcon />
             </IconButton>
-            <Typography variant='h6' noWrap>
+            <Typography variant='h6' color='inherit' noWrap>
               Persistent drawer
             </Typography>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={this.handleSubmit}>
+              Save Palette
+            </Button>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -166,11 +203,11 @@ class NewPaletteForm extends Component {
             <TextValidator
               value={this.state.newName}
               onChange={this.handleChange}
-              validators={['required', 'isColorNameUnique', 'isColorUnique']}
+              validators={["required", "isColorNameUnique", "isColorUnique"]}
               errorMessages={[
-                'Enter a color name',
-                'Color name ust be unique',
-                'Color already used!'
+                "Enter a color name",
+                "Color name ust be unique",
+                "Color already used!",
               ]}
             />
             <Button
