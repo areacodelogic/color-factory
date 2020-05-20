@@ -25,7 +25,7 @@ const styles = (theme) => ({
     }),
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: 'center',
+    alignItems: "center",
     height: "64px",
   },
   appBarShift: {
@@ -43,8 +43,8 @@ const styles = (theme) => ({
   navBtns: {
     marginRight: "1rem",
     "& a": {
-      textDecoration: 'none'
-    }
+      textDecoration: "none",
+    },
   },
   button: {
     margin: "0 0.5rem",
@@ -67,7 +67,7 @@ class PaletteFormNav extends Component {
   }
 
   hideForm() {
-    this.setState({formShowing: false})
+    this.setState({ formShowing: false });
   }
 
   render() {
@@ -113,7 +113,11 @@ class PaletteFormNav extends Component {
           </div>
         </AppBar>
         {this.state.formShowing && (
-          <PaletteMetaForm palettes={palettes} handleSubmit={handleSubmit} hideForm={this.hideForm}/>
+          <PaletteMetaForm
+            palettes={palettes}
+            handleSubmit={handleSubmit}
+            hideForm={this.hideForm}
+          />
         )}
       </div>
     );
