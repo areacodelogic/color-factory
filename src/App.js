@@ -5,7 +5,7 @@ import Palette from "./Palette";
 import PaletteList from "./PaletteList";
 import NewPaletteForm from "./NewPaletteForm";
 import SingleColorPalette from "./SingleColorPalette";
-import Page from './Page';
+import Page from "./Page";
 import seedColors from "./seedColors";
 import { generatePalette } from "./colorhelpers";
 
@@ -99,6 +99,17 @@ class App extends Component {
                         palette={generatePalette(
                           this.findPalette(routeProps.match.params.paletteId)
                         )}
+                      />
+                    </Page>
+                  )}
+                />
+                <Route
+                  render={(rtProps) => (
+                    <Page>
+                      <PaletteList
+                        palettes={this.state.palettes}
+                        deletePalette={this.deletePalette}
+                        {...rtProps}
                       />
                     </Page>
                   )}
